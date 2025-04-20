@@ -91,19 +91,12 @@ export default function PostDetailsPage({
               <div className="md:flex">
                 <div className="md:flex-shrink-0">
                   <Image
-                    src={
-                      data?.featured_media_object?.source_url ||
-                      "/images/default-post.jpg"
-                    }
+                    src={data?.featured_media_object?.source_url || ""}
                     alt={`Image for post titled "${data?.title?.rendered}"`}
                     width={500}
                     height={500}
                     priority
                     className="h-48 w-full object-cover md:h-full md:w-[300px]"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/images/default-post.jpg";
-                    }}
                   />
                 </div>
                 <div className="p-8">

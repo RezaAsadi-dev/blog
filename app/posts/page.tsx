@@ -114,20 +114,12 @@ export default function PostsPage() {
                     </h4>
                   </CardHeader>
                   <Image
-                    // removeWrapper
                     width={400}
                     height={400}
                     alt={`Image for post titled "${post.title.rendered}"`}
                     className="z-0 w-full h-full object-cover"
-                    src={
-                      post.featured_media_object?.source_url ||
-                      "/images/default-post.jpg"
-                    }
+                    src={post.featured_media_object.source_url}
                     priority
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/images/default-post.jpg";
-                    }}
                   />
                   <CardFooter className="absolute bg-black/40 bottom-0 z-10 flex justify-between">
                     <div
