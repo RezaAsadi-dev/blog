@@ -39,7 +39,7 @@ interface Post {
 
 export default function PostsPage() {
   const router = useRouter();
-  const { data, isLoading, error } = useQuery<Post[],Error>({
+  const { data, isLoading, error } = useQuery<Post[], Error>({
     queryKey: ["posts"],
     queryFn: fetchPosts,
   });
@@ -76,14 +76,17 @@ export default function PostsPage() {
               </div>
             ))}
           </div>
-        )  : error?  error.message==="Unauthorized" ?
-        redirect("/login") : (
-       <div className="min-h-[69vh] flex justify-center items-center h-screen">
-         <p className="text-red-500 text-xl">
-           Error loading post details: {error.message}
-         </p>
-       </div>
-     ) : (
+        ) : error ? (
+          error.message === "Unauthorized" ? (
+            redirect("/login")
+          ) : (
+            <div className="min-h-[69vh] flex justify-center items-center h-screen">
+              <p className="text-red-500 text-xl">
+                Error loading post details: {error.message}
+              </p>
+            </div>
+          )
+        ) : (
           <div className="mx-[20px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-4">
             {data?.map((post, index) => (
               <Link
@@ -116,8 +119,15 @@ export default function PostsPage() {
                     height={400}
                     alt={`Image for post titled "${post.title.rendered}"`}
                     className="z-0 w-full h-full object-cover"
-                    src={post.featured_media_object.source_url}
+                    src={
+                      post.featured_media_object?.source_url ||
+                      "/images/default-post.jpg"
+                    }
                     priority
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/images/default-post.jpg";
+                    }}
                   />
                   <CardFooter className="absolute bg-black/40 bottom-0 z-10 flex justify-between">
                     <div

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Chip, Skeleton } from "@nextui-org/react";
 import Link from "next/link";
 import Head from "next/head";
-import {redirect, useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface Category {
@@ -40,17 +40,17 @@ export default function PostDetailsPage({
     queryFn: () => fetchPostDetails(id),
   });
 
-  const formattedDate = data?.date 
+  const formattedDate = data?.date
     ? new Date(data.date).toLocaleDateString("fa", {
         month: "long",
         day: "numeric",
         year: "numeric",
       })
-    :  new Date("2024-05-15").toLocaleDateString("fa", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
+    : new Date("2024-05-15").toLocaleDateString("fa", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
 
   return (
     <div className="min-h-[80vh]  py-12 px-4 sm:px-6 lg:px-8">
@@ -73,14 +73,17 @@ export default function PostDetailsPage({
               <Skeleton className="h-10 w-1/4 rounded-md" />
             </div>
           </div>
-        </div>)
-         : error?  error.message==="Unauthorized" ?
-         redirect("/login") : (
-        <div className="min-h-[69vh] flex justify-center items-center h-screen">
-          <p className="text-red-500 text-xl">
-            Error loading post details: {error.message}
-          </p>
         </div>
+      ) : error ? (
+        error.message === "Unauthorized" ? (
+          redirect("/login")
+        ) : (
+          <div className="min-h-[69vh] flex justify-center items-center h-screen">
+            <p className="text-red-500 text-xl">
+              Error loading post details: {error.message}
+            </p>
+          </div>
+        )
       ) : (
         <div className="min-h-[69vh] flex justify-center items-center  py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -88,12 +91,19 @@ export default function PostDetailsPage({
               <div className="md:flex">
                 <div className="md:flex-shrink-0">
                   <Image
-                    src={data?.featured_media_object?.source_url || ""}
+                    src={
+                      data?.featured_media_object?.source_url ||
+                      "/images/default-post.jpg"
+                    }
                     alt={`Image for post titled "${data?.title?.rendered}"`}
                     width={500}
                     height={500}
                     priority
                     className="h-48 w-full object-cover md:h-full md:w-[300px]"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/images/default-post.jpg";
+                    }}
                   />
                 </div>
                 <div className="p-8">
